@@ -1,4 +1,6 @@
-USE powerwall
+# DDL
+# USE powerwall
+CREATE DATABASE powerwall
 CREATE RETENTION POLICY raw ON powerwall duration 3d replication 1
 ALTER RETENTION POLICY autogen ON powerwall duration 730d
 CREATE RETENTION POLICY strings ON powerwall duration 730d replication 1

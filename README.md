@@ -9,22 +9,38 @@ This is based on the great work by [mihailescu2m](https://github.com/mihailescu2
 
 ## Requirements
 
+The host system will require:
+
 * docker
 * docker-compose
 
-## Installation
+## Setup
 
 Clone this repo to your local host that will run the dashboard:
 
 ```bash
-git clone https://github.com/jasonacox/powerwall_monitor.git
+    git clone https://github.com/jasonacox/powerwall_monitor.git
 ```
+
+## Quick Start
+
+Run the interactive setup script that will ask you for your Powerwall details and Time Zone data.
+
+```bash
+    ./setup.sh
+```
+
+Jump to the **Grafana Setup** below to complete the setup.
+
+## Manual Install
+
+If you prefer, you can perform the same steps that `setup.sh` performs.
 
 You will want to set your local timezone by editing `powerwall.yml`, `influxdb.sql` and `dashboard.json` or you can use this handy `tz.sh` update script.  A list of timezones is available [here](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).
 
 ```bash
-# Replace with your timezone
-bash tz.sh "America/Los_Angeles"
+  # Replace with your timezone
+  bash tz.sh "America/Los_Angeles"
 ```
 
 ### Docker Containers
@@ -48,28 +64,15 @@ bash tz.sh "America/Los_Angeles"
 
 ### InfluxDB
 
-* Connect to the Influx database shell: `docker exec -it influxdb influx`
-* At the database prompt, you will need to enter (copy/paste) the following commands after you adjust the timezone (tz) as appropriate.  If you are on a Mac you can `pbcopy < influxdb.sql` to grab the edited version into your clipboard for pasting or you can grab the commands below (also in [influxdb.sql](influxdb.sql)):
+* Connect to the Influx database to import setup commands: 
 
-    ```sql
-    USE powerwall
-    CREATE RETENTION POLICY raw ON powerwall duration 3d replication 1
-    ALTER RETENTION POLICY autogen ON powerwall duration 730d
-    CREATE RETENTION POLICY strings ON powerwall duration 730d replication 1
-    CREATE RETENTION POLICY kwh ON powerwall duration INF replication 1
-    CREATE RETENTION POLICY daily ON powerwall duration INF replication 1
-    CREATE RETENTION POLICY monthly ON powerwall duration INF replication 1
-    CREATE CONTINUOUS QUERY cq_autogen ON powerwall BEGIN SELECT mean(home) AS home, mean(solar) AS solar, mean(from_pw) AS from_pw, mean(to_pw) AS to_pw, mean(from_grid) AS from_grid, mean(to_grid) AS to_grid, last(percentage) AS percentage INTO powerwall.autogen.:MEASUREMENT FROM (SELECT load_instant_power AS home, solar_instant_power AS solar, abs((1+battery_instant_power/abs(battery_instant_power))*battery_instant_power/2) AS from_pw, abs((1-battery_instant_power/abs(battery_instant_power))*battery_instant_power/2) AS to_pw, abs((1+site_instant_power/abs(site_instant_power))*site_instant_power/2) AS from_grid, abs((1-site_instant_power/abs(site_instant_power))*site_instant_power/2) AS to_grid, percentage FROM raw.http) GROUP BY time(1m), month, year fill(linear) END
-    CREATE CONTINUOUS QUERY cq_kwh ON powerwall RESAMPLE EVERY 1m BEGIN SELECT integral(home)/1000/3600 AS home, integral(solar)/1000/3600 AS solar, integral(from_pw)/1000/3600 AS from_pw, integral(to_pw)/1000/3600 AS to_pw, integral(from_grid)/1000/3600 AS from_grid, integral(to_grid)/1000/3600 AS to_grid INTO powerwall.kwh.:MEASUREMENT FROM autogen.http GROUP BY time(1h), month, year tz('America/Los_Angeles') END
-    CREATE CONTINUOUS QUERY cq_daily ON powerwall RESAMPLE EVERY 1h BEGIN SELECT sum(home) AS home, sum(solar) AS solar, sum(from_pw) AS from_pw, sum(to_pw) AS to_pw, sum(from_grid) AS from_grid, sum(to_grid) AS to_grid INTO powerwall.daily.:MEASUREMENT FROM powerwall.kwh.http GROUP BY time(1d), month, year tz('America/Los_Angeles') END 
-    CREATE CONTINUOUS QUERY cq_monthly ON powerwall RESAMPLE EVERY 1h BEGIN SELECT sum(home) AS home, sum(solar) AS solar, sum(from_pw) AS from_pw, sum(to_pw) AS to_pw, sum(from_grid) AS from_grid, sum(to_grid) AS to_grid INTO powerwall.monthly.:MEASUREMENT FROM powerwall.daily.http GROUP BY time(365d), month, year END
-    CREATE CONTINUOUS QUERY cq_strings ON powerwall BEGIN SELECT mean(A_Current) AS A_Current, mean(A_Power) AS A_Power, mean(A_Voltage) AS A_Voltage, mean(B_Current) AS B_Current, mean(B_Power) AS B_Power, mean(B_Voltage) AS B_Voltage, mean(C_Current) AS C_Current, mean(C_Power) AS C_Power, mean(C_Voltage) AS C_Voltage, mean(D_Current) AS D_Current, mean(D_Power) AS D_Power, mean(D_Voltage) AS D_Voltage INTO powerwall.strings.:MEASUREMENT FROM (SELECT A_Current, A_Power, A_Voltage, B_Current, B_Power, B_Voltage, C_Current, C_Power, C_Voltage, D_Current, D_Power, D_Voltage FROM raw.http) GROUP BY time(1m), month, year fill(linear) END
+```bash
+    docker exec -it influxdb influx -import -path=/var/lib/influxdb/influxdb.sql
+```
 
-    ```
+Note: the influxdb.sql file is set to use `America/Los_Angeles` as timezone. Use the `tz.sh` script or manually update the database commands above to replace `America/Los_Angeles` with your own timezone.
 
-Note: the database queries are set to use `America/Los_Angeles` as timezone. Use the `tz.sh` script or manually update the database commands above to replace `America/Los_Angeles` with your own timezone.
-
-### Grafana Setup
+## Grafana Setup
 
 * Open up Grafana in a browser at `http://<server ip>:9000` and login with `admin/admin`
 
@@ -89,7 +92,7 @@ Note: the database queries are set to use `America/Los_Angeles` as timezone. Use
 
 ### Notes
 
-* The database queries and dashboard are set to use `America/Los_Angeles` as the timezone. Remember to edit the database commands [influxdb.sql](influxdb.sql), [powerwall.yml](powerwall.yml), and [dashboard.json](dashboard.json) to replace `America/Los_Angeles` with your own timezone.
+* The database queries and dashboard are set to use `America/Los_Angeles` as the timezone. Remember to edit the database commands [influxdb.sql](influxdb/influxdb.sql), [powerwall.yml](powerwall.yml), and [dashboard.json](dashboard.json) to replace `America/Los_Angeles` with your own timezone.
 
 * InfluxDB does not run reliably on older models of Raspberry Pi, resulting in the Docker container terminating with `error 139`.  
 
