@@ -2413,7 +2413,7 @@
           ],
           "measurement": "http",
           "orderByTime": "ASC",
-          "policy": "raw",
+          "policy": "strings",
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
@@ -2450,7 +2450,7 @@
           ],
           "measurement": "http",
           "orderByTime": "ASC",
-          "policy": "raw",
+          "policy": "strings",
           "refId": "B",
           "resultFormat": "time_series",
           "select": [
@@ -2487,7 +2487,7 @@
           ],
           "measurement": "http",
           "orderByTime": "ASC",
-          "policy": "raw",
+          "policy": "strings",
           "refId": "C",
           "resultFormat": "time_series",
           "select": [
@@ -2524,7 +2524,7 @@
           ],
           "measurement": "http",
           "orderByTime": "ASC",
-          "policy": "raw",
+          "policy": "strings",
           "refId": "D",
           "resultFormat": "time_series",
           "select": [
@@ -2649,7 +2649,7 @@
           ],
           "measurement": "http",
           "orderByTime": "ASC",
-          "policy": "raw",
+          "policy": "strings",
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
@@ -2686,7 +2686,7 @@
           ],
           "measurement": "http",
           "orderByTime": "ASC",
-          "policy": "raw",
+          "policy": "strings",
           "refId": "B",
           "resultFormat": "time_series",
           "select": [
@@ -2723,7 +2723,7 @@
           ],
           "measurement": "http",
           "orderByTime": "ASC",
-          "policy": "raw",
+          "policy": "strings",
           "refId": "C",
           "resultFormat": "time_series",
           "select": [
@@ -2760,7 +2760,7 @@
           ],
           "measurement": "http",
           "orderByTime": "ASC",
-          "policy": "raw",
+          "policy": "strings",
           "refId": "D",
           "resultFormat": "time_series",
           "select": [
@@ -2883,7 +2883,7 @@
           ],
           "measurement": "http",
           "orderByTime": "ASC",
-          "policy": "raw",
+          "policy": "strings",
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
@@ -2920,7 +2920,7 @@
           ],
           "measurement": "http",
           "orderByTime": "ASC",
-          "policy": "raw",
+          "policy": "strings",
           "refId": "B",
           "resultFormat": "time_series",
           "select": [
@@ -2957,7 +2957,7 @@
           ],
           "measurement": "http",
           "orderByTime": "ASC",
-          "policy": "raw",
+          "policy": "strings",
           "refId": "C",
           "resultFormat": "time_series",
           "select": [
@@ -2994,7 +2994,7 @@
           ],
           "measurement": "http",
           "orderByTime": "ASC",
-          "policy": "raw",
+          "policy": "strings",
           "refId": "D",
           "resultFormat": "time_series",
           "select": [
@@ -3223,5 +3223,5 @@
   "timezone": "browser",
   "title": "Powerwall",
   "uid": "RSDbqvRRz",
-  "version": 9
+  "version": 12
 }
