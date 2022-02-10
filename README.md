@@ -2,6 +2,11 @@
 
 Monitoring Dashboard for the Tesla Powerwall using Grafana, InfluxDB and Telegraf.
 
+## NEW LOCATION
+
+**This fork has materially changed from the original and is now hosted in a new location.**
+Please see [Powerwall-Dashboard](https://github.com/jasonacox/Powerwall-Dashboard)
+
 ![Dashboard](https://user-images.githubusercontent.com/836718/144769680-78b8abf4-4336-4672-9483-896b0476ec44.png)
 ![Strings](https://user-images.githubusercontent.com/836718/146310511-7863e4bb-7e43-40b9-9790-65c1d6ce24ba.png)
 
